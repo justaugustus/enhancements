@@ -21,6 +21,7 @@ import (
 	"sort"
 	"strings"
 
+	"k8s.io/enhancements/api"
 	"k8s.io/enhancements/pkg/legacy/util"
 )
 
@@ -58,7 +59,11 @@ func ValidateStructure(parsed map[interface{}]interface{}) error {
 
 func validateMilestone(parsed map[interface{}]interface{}) error {
 	// prrApprovers must be sorted to use SearchStrings down below...
-	prrApprovers := util.PRRApprovers()
+	prrApprovers, err := api.FetchPRRApprovers()
+	if err != nil {
+		return err
+	}
+
 	sort.Strings(prrApprovers)
 
 	for key, value := range parsed {

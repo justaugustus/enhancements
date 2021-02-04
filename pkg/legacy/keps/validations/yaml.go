@@ -21,6 +21,7 @@ import (
 	"sort"
 	"strings"
 
+	"k8s.io/enhancements/api"
 	"k8s.io/enhancements/pkg/legacy/util"
 )
 
@@ -42,8 +43,15 @@ func ValidateStructure(parsed map[interface{}]interface{}) error {
 		}
 	}
 
-	listGroups := util.Groups()
-	prrApprovers := util.PRRApprovers()
+	listGroups, err := api.FetchGroups()
+	if err != nil {
+		return err
+	}
+
+	prrApprovers, err := api.FetchPRRApprovers()
+	if err != nil {
+		return err
+	}
 
 	for key, value := range parsed {
 		// First off the key has to be a string. fact.
